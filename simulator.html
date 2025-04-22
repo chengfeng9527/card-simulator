@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>卓越抽卡模擬器</title>
+  <style>
+    body {
+      background: #f0f0f0;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .controls {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .controls button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+
+    .results {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .card {
+      width: 160px;
+      height: 80px;
+      border-radius: 6px;
+      padding: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .Normal {
+      background: #ffffff;
+      color: #000;
+      border: 1px solid #ddd;
+    }
+
+    .Signature {
+      background: #28a745;
+    }
+
+    .Supreme {
+      background: #000;
+    }
+
+    .reset-btn {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>卡片抽卡模擬器</h1>
+  <div class="controls">
+    <button onclick="drawCards(1)">抽 1 次</button>
+    <button onclick="drawCards(2)">抽 2 次</button>
+    <button onclick="drawCards(4)">抽 4 次</button>
+    <button onclick="drawCards(8)">抽 8 次</button>
+    <button onclick="drawCards(10)">抽 10 次</button>
+    <button class="reset-btn" onclick="resetResults()">重置</button>
+  </div>
+  <div class="results" id="results"></div>
+
+  <script>
+    const cardData = [
+      { grade: "Diamond", type: "Normal", name: "A.Beltre", year: "04", prob: 0.7083333333 },
+      { grade: "Diamond", type: "Normal", name: "A.Beltre", year: "10", prob: 0.7083333333 },
+      { grade: "Diamond", type: "Normal", name: "A.Beltre", year: "12", prob: 0.7083333333 },
+      { grade: "Diamond", type: "Normal", name: "D.Jeter", year: "09", prob: 0.7083333333 },
+      { grade: "Diamond", type: "Signature", name: "A.Beltre", year: "04", prob: 0.0416666667 },
+      { grade: "Diamond", type: "Signature", name: "D.Jeter", year: "09", prob: 0.0416666667 },
+      { grade: "Diamond", type: "Supreme", name: "S.Paige", year: "", prob: 0.1 },
+      { grade: "Gold", type: "Normal", name: "A.Beltre", year: "04", prob: 4.25 },
+      { grade: "Gold", type: "Signature", name: "K.Puckett", year: "88", prob: 0.25 },
+      { grade: "Silver", type: "Supreme", name: "D.Jeter", year: "", prob: 1.3 }
+      // 你可以繼續補完整資料...
+    ];
+
+    function drawCards(count) {
+      const drawn = [];
+      for (let i = 0; i < count; i++) {
+        drawn.push(drawOneCard());
+      }
+      showResults(drawn);
+    }
+
+    function drawOneCard() {
+      const totalProb = cardData.reduce((sum, card) => sum + card.prob, 0);
+      const rand = Math.random() * totalProb;
+      let acc = 0;
+      for (const card of cardData) {
+        acc += card.prob;
+        if (rand <= acc) return card;
+      }
+      return cardData[cardData.length - 1];
+    }
+
+    function showResults(cards) {
+      const resultsDiv = document.getElementById("results");
+      cards.forEach(card => {
+        const cardDiv = document.createElement("div");
+        cardDiv.className = `card ${card.type}`;
+        const yearDisplay = card.year ? card.year.padStart(2, "0") : "";
+        cardDiv.innerHTML = `${card.name} ${yearDisplay}<br><small>${card.type}</small>`;
+        resultsDiv.appendChild(cardDiv);
+      });
+    }
+
+    function resetResults() {
+      document.getElementById("results").innerHTML = "";
+    }
+  </script>
+</body>
+</html>
